@@ -34,7 +34,7 @@ class _SplashScreenState extends State<SplashScreen> {
           Positioned(
             // left:-200,
             child: Image.asset(
-              "splash3.png",
+              "assets/splash3.png",
               fit: BoxFit.cover,
             ),
           ),

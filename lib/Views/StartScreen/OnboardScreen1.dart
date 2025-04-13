@@ -20,7 +20,7 @@ class OnboardScreen1 extends StatelessWidget {
             top: 320,
             // bottom: -15,
             child: Image.asset(
-              '/farmer.png', // Make sure the path is correct
+              'assets/farmer.png', // Make sure the path is correct
               width: 400, // Adjust size as needed
               // height: 200,
               fit: BoxFit.cover,

@@ -96,6 +96,8 @@
 import 'package:agriconnect/Component/customButton.dart';
 import 'package:agriconnect/Component/customSize.dart';
 import 'package:agriconnect/Component/inputField.dart';
+import 'package:agriconnect/Views/Authentication/Login.dart';
+import 'package:agriconnect/Views/Authentication/signUp.dart';
 import 'package:agriconnect/constants/colors.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
@@ -145,7 +147,7 @@ class _SignupFormState extends State<SignupForm> {
              ],
            ),),
            SizedBox(
-                height: 30,
+                height: 10,
               ),
                   Text(
                         widget.title,
@@ -157,7 +159,7 @@ class _SignupFormState extends State<SignupForm> {
                       ),
 
               SizedBox(
-                height: 20,
+                height: 10,
               ),
               MyTextField(widget.controller.userNameController,
                   hintText: 'Username', prefixIcon: Icons.person),
@@ -191,7 +193,7 @@ class _SignupFormState extends State<SignupForm> {
                       hintText: 'Experience', prefixIcon: Icons.work),
                 ),
 
-              const SizedBox(height: 10),
+              const SizedBox(height: 5),
               widget.controller.image != null
                   ? Image.file(widget.controller.image!, height: 100)
                   : 
@@ -199,12 +201,12 @@ class _SignupFormState extends State<SignupForm> {
                   Text(
                           'No image selected',
                           style: GoogleFonts.inter(
-                            fontSize: 18,
+                            fontSize: 15,
                             fontWeight: FontWeight.w500,
                             color: const Color.fromARGB(255, 11, 9, 9)
                           ),
                         ),
-              const SizedBox(height: 10),
+              const SizedBox(height: 5),
                  Container(
             margin: EdgeInsets.only(left: 15,right: 15),
             child:    CustomButton(
@@ -226,7 +228,7 @@ class _SignupFormState extends State<SignupForm> {
               //   setState(() {});
               // }),
 
-              const SizedBox(height: 20),
+              const SizedBox(height: 10),
                Container(
             margin: EdgeInsets.only(left: 15,right: 15),
             child:    CustomButton(
@@ -243,7 +245,7 @@ class _SignupFormState extends State<SignupForm> {
               // MyElevatedBtn("Register as ${widget.role}",
               //     () => widget.controller.register(context)),
 
-                         const SizedBox(height: 16),
+                         const SizedBox(height: 10),
 
  Row(
   mainAxisAlignment: MainAxisAlignment.center,

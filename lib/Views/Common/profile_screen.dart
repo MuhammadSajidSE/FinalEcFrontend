@@ -1,8 +1,6 @@
 import 'dart:convert';
 import 'package:agriconnect/Views/Buyer/mainBuyer.dart';
 import 'package:agriconnect/Views/Farmer/mainFarmer.dart';
-import 'package:agriconnect/Views/Trainer/mainTrainer.dart';
-import 'package:agriconnect/Views/Transporter/mainTransporter.dart';
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:http/http.dart' as http;
@@ -46,18 +44,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
           MaterialPageRoute(builder: (context) => FarmerMain()),
         );
         break;
-      case 'Transporter':
-        Navigator.pushReplacement(
-          context,
-          MaterialPageRoute(builder: (context) => Maintransporter()),
-        );
-        break;
-      case 'Trainer':
-        Navigator.pushReplacement(
-          context,
-          MaterialPageRoute(builder: (context) => Maintrainer()),
-        );
-        break;
+
       default:
         Navigator.pop(context); // Go back to the previous screen
     }

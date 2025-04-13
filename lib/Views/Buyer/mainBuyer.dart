@@ -7,6 +7,7 @@ import 'package:agriconnect/Views/Buyer/history_order.dart';
 import 'package:agriconnect/Views/Common/profile_screen.dart';
 import 'package:agriconnect/Views/Order/detailed.dart';
 import 'package:agriconnect/Views/Order/shoppingCard.dart';
+import 'package:agriconnect/Views/chatting/contact.dart';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
@@ -31,7 +32,7 @@ class _BuyerMainState extends State<BuyerMain> {
   String categoryFilter = "";
   String nameFilter = "";
   int _selectedIndex = 0;
-
+  String phoneno = '';
   @override
   void initState() {
     super.initState();
@@ -46,6 +47,7 @@ class _BuyerMainState extends State<BuyerMain> {
       imageUrl = prefs.getString('imageUrl');
       userId = prefs.getInt('userId');
       roleName = prefs.getString('roleName');
+      phoneno = prefs.getString('phoneNumber') ?? '';
     });
   }
 
@@ -226,12 +228,21 @@ class _BuyerMainState extends State<BuyerMain> {
             ),
             ListTile(
               leading: const Icon(Icons.money),
+              title: const Text('chatting'),
+              onTap: () {
+                Navigator.pushReplacement(
+                  context,
+                  MaterialPageRoute(builder: (context) => ContactsScreen(phone: phoneno,)),
+                );
+              },
+            ),
+            ListTile(
+              leading: const Icon(Icons.money),
               title: const Text('History Order'),
               onTap: () {
                 Navigator.pushReplacement(
                   context,
-                  MaterialPageRoute(
-                      builder: (context) => HistoryOrder()),
+                  MaterialPageRoute(builder: (context) => HistoryOrder()),
                 );
               },
             ),

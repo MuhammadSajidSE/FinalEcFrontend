@@ -27,219 +27,221 @@ class Login extends StatelessWidget {
 
       // body: Padding(
       // padding: const EdgeInsets.only(left:16.0,right: 16),
-      body: Column(
-        mainAxisAlignment: MainAxisAlignment.start,
-        children: [
-          Container(
-            height: 100,
-            width: double.infinity,
-            color: MyColors.primaryColor,
-          ),
-          SizedBox(
-            height: 30,
-          ),
-          Row(
-            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-            children: [
-              Text(
-                'Login',
-                style: GoogleFonts.inter(
-                    fontSize: 20,
-                    fontWeight: FontWeight.w700,
-                    color: MyColors.primaryColor),
+      body: SingleChildScrollView(
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.start,
+          children: [
+            Container(
+              height: 100,
+              width: double.infinity,
+              color: MyColors.primaryColor,
+            ),
+            SizedBox(
+              height: 30,
+            ),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+              children: [
+                Text(
+                  'Login',
+                  style: GoogleFonts.inter(
+                      fontSize: 20,
+                      fontWeight: FontWeight.w700,
+                      color: MyColors.primaryColor),
+                ),
+                // Text(
+                //   "Login",
+                //   style: TextStyle(fontSize: 25, fontWeight: FontWeight.w900,color: MyColors.primaryColor),
+                // ),
+        
+                GestureDetector(
+                  onTap: () {
+                    Navigator.pushReplacement(context,
+                        MaterialPageRoute(builder: (context) => signUpScreen()));
+                  },
+                  child: Text(
+                    'Register',
+                    style: GoogleFonts.inter(
+                        fontSize: 20,
+                        fontWeight: FontWeight.w700,
+                        color: MyColors.black),
+                  ),
+                ),
+        
+                //      Text(
+                //   "Register",
+                //   style: TextStyle(fontSize: 25, fontWeight: FontWeight.w900,color: MyColors.black),
+                // ),
+              ],
+            ),
+            SizedBox(
+              height: 10,
+            ),
+        
+            Container(
+              margin: const EdgeInsets.symmetric(horizontal: 15),
+              height: 3.5,
+              width: double.infinity,
+              child: Row(
+                children: [
+                  Expanded(
+                    child: Container(color: MyColors.primaryColor), // 50% Green
+                  ),
+                  Expanded(
+                    child: Container(color: Colors.grey.shade300), // 50% Grey
+                  ),
+                ],
               ),
-              // Text(
-              //   "Login",
-              //   style: TextStyle(fontSize: 25, fontWeight: FontWeight.w900,color: MyColors.primaryColor),
-              // ),
-
-              GestureDetector(
-                onTap: () {
-                  Navigator.pushReplacement(context,
-                      MaterialPageRoute(builder: (context) => signUpScreen()));
-                },
-                child: Text(
-                  'Register',
+            ),
+        
+            SizedBox(
+              height: 20,
+            ),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                Text(
+                  'Welcome to',
                   style: GoogleFonts.inter(
                       fontSize: 20,
                       fontWeight: FontWeight.w700,
                       color: MyColors.black),
                 ),
-              ),
-
-              //      Text(
-              //   "Register",
-              //   style: TextStyle(fontSize: 25, fontWeight: FontWeight.w900,color: MyColors.black),
-              // ),
-            ],
-          ),
-          SizedBox(
-            height: 10,
-          ),
-
-          Container(
-            margin: const EdgeInsets.symmetric(horizontal: 15),
-            height: 3.5,
-            width: double.infinity,
-            child: Row(
-              children: [
-                Expanded(
-                  child: Container(color: MyColors.primaryColor), // 50% Green
+                // Text(
+                //   "Welcome to ",
+                //   style: TextStyle(fontSize: 16, fontWeight: FontWeight.w900,color: Colors.black),
+                // ),
+                SizedBox(
+                  width: 4,
                 ),
-                Expanded(
-                  child: Container(color: Colors.grey.shade300), // 50% Grey
+                Text(
+                  'AgriConnect',
+                  style: GoogleFonts.inter(
+                      fontSize: 20,
+                      fontWeight: FontWeight.w700,
+                      color: MyColors.primaryColor),
+                ),
+                // Text(
+                //   "AgriConnect",
+                //   style: TextStyle(fontSize: 17, fontWeight: FontWeight.w900,color: MyColors.primaryColor),
+                // ),
+              ],
+            ),
+            SizedBox(
+              height: 30,
+            ),
+            Padding(
+              padding: const EdgeInsets.only(left: 8, right: 8),
+              child: MyTextField(emailController,
+                  hintText: "Enter your email",
+                  prefixIcon: Icons.email,
+                  keyboardType: TextInputType.emailAddress),
+            ),
+            // TextField(
+            //   controller: emailController,
+            //   decoration: const InputDecoration(
+            //     labelText: 'Email',
+            //     border: OutlineInputBorder(),
+            //     prefixIcon: Icon(Icons.email),
+            //   ),
+            //   keyboardType: TextInputType.emailAddress,
+            // ),
+            const SizedBox(height: 16),
+            // TextField(
+            //   controller: passwordController,
+            //   decoration: const InputDecoration(
+            //     labelText: 'Password',
+            //     border: OutlineInputBorder(),
+            //     prefixIcon: Icon(Icons.lock),
+            //   ),
+            //   obscureText: true,
+            // ),
+            Padding(
+              padding: const EdgeInsets.only(left: 10, right: 10),
+              child: MyTextField(
+                passwordController,
+                hintText: "Enter your password",
+                prefixIcon: Icons.lock,
+                isPassword: true, // Hide password
+              ),
+            ),
+            const SizedBox(height: 24),
+            Container(
+              margin: EdgeInsets.only(left: 15, right: 15),
+              child: CustomButton(
+                radius: CustomSize().customWidth(context) / 10,
+                height: CustomSize().customHeight(context) / 15,
+                width: CustomSize().customWidth(context),
+                title: "Login",
+                loading: false,
+                color: MyColors.primaryColor,
+                onTap: () async {
+                  await _controller.login(
+                    context: context,
+                    email: emailController.text,
+                    password: passwordController.text,
+                  );
+                },
+              ),
+            ),
+            // MyElevatedBtn("Login", () async {
+            //   await _controller.login(
+            //     context: context,
+            //     email: emailController.text,
+            //     password: passwordController.text,
+            //   );
+            // }),
+            const SizedBox(height: 4),
+        
+            Row(
+              mainAxisAlignment: MainAxisAlignment.end,
+              children: [
+                Container(
+                  margin: EdgeInsets.only(right: 15),
+                  child: Text(
+                    "Forgot Password?",
+                    style: GoogleFonts.inter(
+                        fontSize: 16,
+                        fontWeight: FontWeight.w700,
+                        color: MyColors.primaryColor),
+                  ),
                 ),
               ],
             ),
-          ),
-
-          SizedBox(
-            height: 20,
-          ),
-          Row(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              Text(
-                'Welcome to',
-                style: GoogleFonts.inter(
-                    fontSize: 20,
-                    fontWeight: FontWeight.w700,
-                    color: MyColors.black),
-              ),
-              // Text(
-              //   "Welcome to ",
-              //   style: TextStyle(fontSize: 16, fontWeight: FontWeight.w900,color: Colors.black),
-              // ),
-              SizedBox(
-                width: 4,
-              ),
-              Text(
-                'AgriConnect',
-                style: GoogleFonts.inter(
-                    fontSize: 20,
-                    fontWeight: FontWeight.w700,
-                    color: MyColors.primaryColor),
-              ),
-              // Text(
-              //   "AgriConnect",
-              //   style: TextStyle(fontSize: 17, fontWeight: FontWeight.w900,color: MyColors.primaryColor),
-              // ),
-            ],
-          ),
-          SizedBox(
-            height: 30,
-          ),
-          Padding(
-            padding: const EdgeInsets.only(left: 8, right: 8),
-            child: MyTextField(emailController,
-                hintText: "Enter your email",
-                prefixIcon: Icons.email,
-                keyboardType: TextInputType.emailAddress),
-          ),
-          // TextField(
-          //   controller: emailController,
-          //   decoration: const InputDecoration(
-          //     labelText: 'Email',
-          //     border: OutlineInputBorder(),
-          //     prefixIcon: Icon(Icons.email),
-          //   ),
-          //   keyboardType: TextInputType.emailAddress,
-          // ),
-          const SizedBox(height: 16),
-          // TextField(
-          //   controller: passwordController,
-          //   decoration: const InputDecoration(
-          //     labelText: 'Password',
-          //     border: OutlineInputBorder(),
-          //     prefixIcon: Icon(Icons.lock),
-          //   ),
-          //   obscureText: true,
-          // ),
-          Padding(
-            padding: const EdgeInsets.only(left: 10, right: 10),
-            child: MyTextField(
-              passwordController,
-              hintText: "Enter your password",
-              prefixIcon: Icons.lock,
-              isPassword: true, // Hide password
-            ),
-          ),
-          const SizedBox(height: 24),
-          Container(
-            margin: EdgeInsets.only(left: 15, right: 15),
-            child: CustomButton(
-              radius: CustomSize().customWidth(context) / 10,
-              height: CustomSize().customHeight(context) / 15,
-              width: CustomSize().customWidth(context),
-              title: "Login",
-              loading: false,
-              color: MyColors.primaryColor,
-              onTap: () async {
-                await _controller.login(
-                  context: context,
-                  email: emailController.text,
-                  password: passwordController.text,
-                );
-              },
-            ),
-          ),
-          // MyElevatedBtn("Login", () async {
-          //   await _controller.login(
-          //     context: context,
-          //     email: emailController.text,
-          //     password: passwordController.text,
-          //   );
-          // }),
-          const SizedBox(height: 4),
-
-          Row(
-            mainAxisAlignment: MainAxisAlignment.end,
-            children: [
-              Container(
-                margin: EdgeInsets.only(right: 15),
-                child: Text(
-                  "Forgot Password?",
+            const SizedBox(height: 16),
+        
+            Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                Text(
+                  "Don't have an Account?",
                   style: GoogleFonts.inter(
                       fontSize: 16,
-                      fontWeight: FontWeight.w700,
-                      color: MyColors.primaryColor),
+                      fontWeight: FontWeight.w600,
+                      color: MyColors.black),
                 ),
-              ),
-            ],
-          ),
-          const SizedBox(height: 16),
-
-          Row(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              Text(
-                "Don't have an Account?",
-                style: GoogleFonts.inter(
-                    fontSize: 16,
-                    fontWeight: FontWeight.w600,
-                    color: MyColors.black),
-              ),
-              SizedBox(
-                width: 4,
-              ),
-              GestureDetector(
-                onTap: () {
-                  Navigator.pushReplacement(context,
-                      MaterialPageRoute(builder: (context) => signUpScreen()));
-                },
-                child: Text(
-                  "Sign Up",
-                  style: GoogleFonts.inter(
-                      fontSize: 17,
-                      fontWeight: FontWeight.w700,
-                      color: MyColors.primaryColor),
+                SizedBox(
+                  width: 4,
                 ),
-              ),
-// Text("Don't have an Account?"),
-              // MyTextButton("Sign Up", ()=> _showSignUpDialog(context))
-            ],
-          )
-        ],
+                GestureDetector(
+                  onTap: () {
+                    Navigator.pushReplacement(context,
+                        MaterialPageRoute(builder: (context) => signUpScreen()));
+                  },
+                  child: Text(
+                    "Sign Up",
+                    style: GoogleFonts.inter(
+                        fontSize: 17,
+                        fontWeight: FontWeight.w700,
+                        color: MyColors.primaryColor),
+                  ),
+                ),
+        // Text("Don't have an Account?"),
+                // MyTextButton("Sign Up", ()=> _showSignUpDialog(context))
+              ],
+            )
+          ],
+        ),
       ),
       // ),
     );

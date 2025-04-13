@@ -125,14 +125,14 @@ class signUpScreen extends StatelessWidget {
               // Background Image
               Image.asset(
                 "assets/Rectangle 33.png",
-                height: 250,
+                height: 300,
                 width: double.infinity,
                 fit: BoxFit.cover,
               ),
           
               // Dark overlay
               Container(
-                height: 250,
+                height: 300,
                 width: double.infinity,
                 color: Colors.black.withOpacity(0.4), // You can adjust the opacity
               ),
@@ -147,7 +147,7 @@ class signUpScreen extends StatelessWidget {
             fontFamily: 'Gilroy',
             fontSize: 49,
             height: 0.9,
-            color: MyColors.primaryColor,
+            color: MyColors.secondaryColor,
           ),
                 ),
               ),

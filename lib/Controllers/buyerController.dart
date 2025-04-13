@@ -1,6 +1,7 @@
 import 'dart:convert';
 import 'dart:io';
 import 'package:agriconnect/Views/Authentication/Login.dart';
+import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'package:image_picker/image_picker.dart';
@@ -15,7 +16,7 @@ class BuyerController {
   final TextEditingController phoneNumberController = TextEditingController();
   final TextEditingController addressController = TextEditingController();
   final TextEditingController nicController = TextEditingController();
-
+  final DatabaseReference dbRef = FirebaseDatabase.instance.ref();
   File? image;
 
   /// Pick image from gallery
@@ -25,6 +26,26 @@ class BuyerController {
     if (pickedFile != null) {
       image = File(pickedFile.path);
     }
+  }
+
+  final DatabaseReference _dbRef =
+      FirebaseDatabase.instance.ref().child("users");
+
+  void registerUser() async {
+    String phone = phoneNumberController.text.trim();
+    String name = userNameController.text.trim();
+    String address = addressController.text.trim();
+
+    if (phone.isEmpty || name.isEmpty) {
+      return;
+    }
+    // Save user to Firebase
+    dbRef.child('users').child(phone).set({'name': name, 'phone': phone,'address': address});
+
+    // Store in SharedPreferences
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    await prefs.setString('Chatphone', phone);
+    await prefs.setString('Chatname', name);
   }
 
   /// Show popup message
@@ -45,7 +66,7 @@ class BuyerController {
   }
 
   /// Register buyer function
-  Future<void> registerBuyer(BuildContext context) async {
+  Future<void> register(BuildContext context) async {
     if (!formKey.currentState!.validate()) {
       showPopup(context, 'Please fill all required fields.');
       return;
@@ -75,22 +96,22 @@ class BuyerController {
       var response = await request.send();
       var responseBody = await response.stream.bytesToString();
 
-if (response.statusCode == 200) {
-    showPopup(context, 'Registration successful!');
-    Navigator.pushReplacement(
-        context,
-        MaterialPageRoute(builder: (context) =>  Login()),
-    );
-} else {
-    var message = jsonDecode(responseBody)['message'] ?? 'Registration failed.';
-    showPopup(context, message);
-}
-
+      if (response.statusCode == 200) {
+        registerUser();
+        showPopup(context, 'Registration successful!');
+        Navigator.pushReplacement(
+          context,
+          MaterialPageRoute(builder: (context) => Login()),
+        );
+      } else {
+        var message =
+            jsonDecode(responseBody)['message'] ?? 'Registration failed.';
+        showPopup(context, message);
+      }
     } catch (e) {
       showPopup(context, 'Error: $e');
     }
   }
-
 
   Future<Map<String, dynamic>> loadUserData() async {
     final prefs = await SharedPreferences.getInstance();
@@ -102,6 +123,7 @@ if (response.statusCode == 200) {
       'roleId': prefs.getInt('roleId'),
     };
   }
+
   /// Dispose controllers
   void dispose() {
     userNameController.dispose();

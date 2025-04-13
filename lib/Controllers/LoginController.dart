@@ -2,14 +2,12 @@ import 'dart:convert';
 import 'package:agriconnect/Views/Authentication/Login.dart';
 import 'package:agriconnect/Views/Buyer/mainBuyer.dart';
 import 'package:agriconnect/Views/Farmer/mainFarmer.dart';
-import 'package:agriconnect/Views/Trainer/mainTrainer.dart';
-import 'package:agriconnect/Views/Transporter/mainTransporter.dart';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'package:shared_preferences/shared_preferences.dart';
 
 class LoginController {
-   final String loginApiUrl = 'http://152.67.10.128:5280/api/auth/login';
+  final String loginApiUrl = 'http://152.67.10.128:5280/api/auth/login';
   // final String loginApiUrl = 'http://localhost:5280/api/auth/login';
 
   final String getDataApiUrl =
@@ -56,107 +54,96 @@ class LoginController {
     }
   }
 
-Future<void> _storeTokenAndFetchUserData(BuildContext context, String token) async {
-  final prefs = await SharedPreferences.getInstance();
+  Future<void> _storeTokenAndFetchUserData(
+      BuildContext context, String token) async {
+    final prefs = await SharedPreferences.getInstance();
 
-  // Store token
-  await prefs.setString(tokenKey, token);
-  print('Token stored successfully!');
+    // Store token
+    await prefs.setString(tokenKey, token);
+    print('Token stored successfully!');
 
-  // Retrieve stored token for verification
-  String? storedToken = prefs.getString(tokenKey);
-  print('Stored Token Key: $tokenKey');  // Debugging: Print key name
-  print('Retrieved Token from SharedPreferences: $storedToken');  // Debugging: Print stored token
+    // Retrieve stored token for verification
+    String? storedToken = prefs.getString(tokenKey);
+    print('Stored Token Key: $tokenKey'); // Debugging: Print key name
+    print(
+        'Retrieved Token from SharedPreferences: $storedToken'); // Debugging: Print stored token
 
-  if (storedToken == null || storedToken.isEmpty) {
-    print('Error: Token was not stored properly!');
-    return;
-  }
-
-  // Fetch user data using the stored token
-  await _fetchUserData(context, storedToken);
-}
-
-
-Future<void> _fetchUserData(BuildContext context, String token) async {
-  try {
-    final url = '$getDataApiUrl?token=${Uri.encodeComponent(token)}';
-    print('Requesting: $url');
-
-    final response = await http.get(Uri.parse(url));
-
-    if (response.statusCode == 200 && response.body.isNotEmpty) {
-      print('Response Data: ${response.body}');
-      final data = jsonDecode(response.body);
-
-      final prefs = await SharedPreferences.getInstance();
-      await prefs.setString('imageUrl', data['imageUrl'] ?? '');
-      await prefs.setString('username', data['userName'] ?? '');
-      await prefs.setInt('userId', data['id'] ?? 0);
-      await prefs.setString('roleName', data['role']?['name'] ?? '');
-   await prefs.setString('roleId', data['\$id'] ?? 0);
-
-
-      // Retrieve and print stored values from SharedPreferences
-      print('Stored SharedPreferences Data:');
-      print('imageUrl: ${prefs.getString('imageUrl')}');
-      print('username: ${prefs.getString('username')}');
-      print('userId: ${prefs.getInt('userId')}');
-      print('roleName: ${prefs.getString('roleName')}');
-      print('roleId: ${prefs.getString('roleId')}');
-
-      // Check if the user is active
-      final bool isActive = data['isactive'] ?? false;
-
-      if (!isActive) {
-        _showPopup(
-            context, 'Your account is deactivated. Please contact support.');
-        return;
-      }
-
-      // Navigate to the related screen based on role
-      final roleName = prefs.getString('roleName') ?? '';
-
-      switch (roleName) {
-        case 'Buyer':
-          Navigator.pushReplacement(
-            context,
-            MaterialPageRoute(builder: (context) => BuyerMain()),
-          );
-          break;
-        case 'Farmer':
-          Navigator.pushReplacement(
-            context,
-            MaterialPageRoute(builder: (context) => FarmerMain()),
-          );
-          break;
-        case 'Transporter':
-          Navigator.pushReplacement(
-            context,
-            MaterialPageRoute(builder: (context) => Maintransporter()),
-          );
-          break;
-        case 'Trainer':
-          Navigator.pushReplacement(
-            context,
-            MaterialPageRoute(builder: (context) => Maintrainer()),
-          );
-          break;
-        default:
-          _showPopup(context, 'Unknown user role: $roleName');
-      }
-    } else {
-      print('Error Response: ${response.statusCode} - ${response.body}');
-      _showPopup(
-        context,
-        'Failed to fetch user data. Status Code: ${response.statusCode}',
-      );
+    if (storedToken == null || storedToken.isEmpty) {
+      print('Error: Token was not stored properly!');
+      return;
     }
-  } catch (e) {
-    print('Exception: $e');
-    _showPopup(context, 'An error occurred: $e');
+
+    // Fetch user data using the stored token
+    await _fetchUserData(context, storedToken);
   }
-}
+
+  Future<void> _fetchUserData(BuildContext context, String token) async {
+    try {
+      final url = '$getDataApiUrl?token=${Uri.encodeComponent(token)}';
+      print('Requesting: $url');
+
+      final response = await http.get(Uri.parse(url));
+
+      if (response.statusCode == 200 && response.body.isNotEmpty) {
+        print('Response Data: ${response.body}');
+        final data = jsonDecode(response.body);
+
+        final prefs = await SharedPreferences.getInstance();
+        await prefs.setString('imageUrl', data['imageUrl'] ?? '');
+        await prefs.setString('username', data['userName'] ?? '');
+        await prefs.setInt('userId', data['id'] ?? 0);
+        await prefs.setString('phoneno', data['phoneNumber'] ?? '');
+        await prefs.setString('roleName', data['role']?['name'] ?? '');
+        await prefs.setString('roleId', data['\$id'] ?? 0);
+
+        // Retrieve and print stored values from SharedPreferences
+        print('Stored SharedPreferences Data:');
+        print('imageUrl: ${prefs.getString('imageUrl')}');
+        print('username: ${prefs.getString('username')}');
+        print('userId: ${prefs.getInt('userId')}');
+        print('roleName: ${prefs.getString('roleName')}');
+        print('roleId: ${prefs.getString('roleId')}');
+
+        // Check if the user is active
+        final bool isActive = data['isactive'] ?? false;
+
+        if (!isActive) {
+          _showPopup(
+              context, 'Your account is deactivated. Please contact support.');
+          return;
+        }
+
+        // Navigate to the related screen based on role
+        final roleName = prefs.getString('roleName') ?? '';
+
+        switch (roleName) {
+          case 'Buyer':
+            Navigator.pushReplacement(
+              context,
+              MaterialPageRoute(builder: (context) => BuyerMain()),
+            );
+            break;
+          case 'Farmer':
+            Navigator.pushReplacement(
+              context,
+              MaterialPageRoute(builder: (context) => FarmerMain()),
+            );
+            break;
+          default:
+            _showPopup(context, 'Unknown user role: $roleName');
+        }
+      } else {
+        print('Error Response: ${response.statusCode} - ${response.body}');
+        _showPopup(
+          context,
+          'Failed to fetch user data. Status Code: ${response.statusCode}',
+        );
+      }
+    } catch (e) {
+      print('Exception: $e');
+      _showPopup(context, 'An error occurred: $e');
+    }
+  }
 
   Future<void> _showPopup(BuildContext context, String message) async {
     showDialog(
@@ -206,12 +193,6 @@ Future<void> _fetchUserData(BuildContext context, String token) async {
             break;
           case 'Farmer':
             _navigateToScreen(context, FarmerMain());
-            break;
-          case 'Transporter':
-            _navigateToScreen(context,  Maintransporter());
-            break;
-          case 'Trainer':
-            _navigateToScreen(context,  Maintrainer());
             break;
           default:
             _navigateToLogin(context);

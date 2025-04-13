@@ -45,7 +45,7 @@ class Farmercontroller {
   }
 
   /// Register buyer function
-  Future<void> registerBuyer(BuildContext context) async {
+  Future<void> register(BuildContext context) async {
     if (!formKey.currentState!.validate()) {
       showPopup(context, 'Please fill all required fields.');
       return;
@@ -58,7 +58,7 @@ class Farmercontroller {
 
     var request = http.MultipartRequest(
       'POST',
-      Uri.parse('http://152.67.10.128:5280/api/buyer/register'),
+      Uri.parse('http://152.67.10.128:5280/api/farmer/register'),
     );
 
     request.fields['UserName'] = userNameController.text;
