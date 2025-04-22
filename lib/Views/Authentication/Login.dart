@@ -12,21 +12,31 @@ import 'package:agriconnect/Views/Authentication/TrainerSignUp.dart';
 import 'package:agriconnect/Views/Authentication/TransporterSignUp.dart';
 import 'package:google_fonts/google_fonts.dart';
 
-class Login extends StatelessWidget {
-  final LoginController _controller = LoginController();
-
+class Login extends StatefulWidget {
   Login({Key? key}) : super(key: key);
 
   @override
-  Widget build(BuildContext context) {
-    final TextEditingController emailController = TextEditingController();
-    final TextEditingController passwordController = TextEditingController();
+  State<Login> createState() => _LoginState();
+}
 
+class _LoginState extends State<Login> {
+  final LoginController _controller = LoginController();
+
+  final TextEditingController emailController = TextEditingController();
+
+  final TextEditingController passwordController = TextEditingController();
+
+  @override
+  void dispose() {
+    emailController.dispose();
+    passwordController.dispose();
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: MyColors.backgroundScaffoldColor,
-
-      // body: Padding(
-      // padding: const EdgeInsets.only(left:16.0,right: 16),
       body: SingleChildScrollView(
         child: Column(
           mainAxisAlignment: MainAxisAlignment.start,
@@ -53,11 +63,13 @@ class Login extends StatelessWidget {
                 //   "Login",
                 //   style: TextStyle(fontSize: 25, fontWeight: FontWeight.w900,color: MyColors.primaryColor),
                 // ),
-        
+
                 GestureDetector(
                   onTap: () {
-                    Navigator.pushReplacement(context,
-                        MaterialPageRoute(builder: (context) => signUpScreen()));
+                    Navigator.pushReplacement(
+                        context,
+                        MaterialPageRoute(
+                            builder: (context) => signUpScreen()));
                   },
                   child: Text(
                     'Register',
@@ -67,7 +79,7 @@ class Login extends StatelessWidget {
                         color: MyColors.black),
                   ),
                 ),
-        
+
                 //      Text(
                 //   "Register",
                 //   style: TextStyle(fontSize: 25, fontWeight: FontWeight.w900,color: MyColors.black),
@@ -77,7 +89,7 @@ class Login extends StatelessWidget {
             SizedBox(
               height: 10,
             ),
-        
+
             Container(
               margin: const EdgeInsets.symmetric(horizontal: 15),
               height: 3.5,
@@ -93,7 +105,7 @@ class Login extends StatelessWidget {
                 ],
               ),
             ),
-        
+
             SizedBox(
               height: 20,
             ),
@@ -192,7 +204,7 @@ class Login extends StatelessWidget {
             //   );
             // }),
             const SizedBox(height: 4),
-        
+
             Row(
               mainAxisAlignment: MainAxisAlignment.end,
               children: [
@@ -209,7 +221,7 @@ class Login extends StatelessWidget {
               ],
             ),
             const SizedBox(height: 16),
-        
+
             Row(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
@@ -225,8 +237,10 @@ class Login extends StatelessWidget {
                 ),
                 GestureDetector(
                   onTap: () {
-                    Navigator.pushReplacement(context,
-                        MaterialPageRoute(builder: (context) => signUpScreen()));
+                    Navigator.pushReplacement(
+                        context,
+                        MaterialPageRoute(
+                            builder: (context) => signUpScreen()));
                   },
                   child: Text(
                     "Sign Up",
@@ -236,7 +250,7 @@ class Login extends StatelessWidget {
                         color: MyColors.primaryColor),
                   ),
                 ),
-        // Text("Don't have an Account?"),
+                // Text("Don't have an Account?"),
                 // MyTextButton("Sign Up", ()=> _showSignUpDialog(context))
               ],
             )
@@ -248,25 +262,6 @@ class Login extends StatelessWidget {
   }
 
   // void _showSignUpDialog(BuildContext context) {
-  //   showDialog(
-  //     context: context,
-  //     builder: (BuildContext context) {
-  //       return AlertDialog(
-  //         title: const Text('Select User Type'),
-  //         content: Column(
-  //           mainAxisSize: MainAxisSize.min,
-  //           children: [
-  //             _buildSignUpButton(context, 'Farmer', FarmerSignup()),
-  //             _buildSignUpButton(context, 'Buyer',  BuyerSignup()),
-  //             _buildSignUpButton(
-  //                 context, 'Transporter', TransporterSignup()),
-  //             _buildSignUpButton(context, 'Trainer', TrainerSignup()),
-  //           ],
-  //         ),
-  //       );
-  //     },
-  //   );
-  // }
   void _showSignUpDialog(BuildContext context) {
     showDialog(
       context: context,

@@ -490,9 +490,9 @@
 //                             )),
 //                         const SizedBox(height: 16),
 
-
-
 import 'dart:convert';
+import 'package:agriconnect/Views/Order/cancelPayment.dart';
+import 'package:agriconnect/Views/Order/confirmPayment.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -500,6 +500,7 @@ import 'package:http/http.dart' as http;
 import 'package:agriconnect/constants/colors.dart';
 import 'package:get/get.dart';
 import 'package:url_launcher/url_launcher.dart';
+import 'package:webview_flutter/webview_flutter.dart';
 
 class API {
   static const String baseURL = 'sandbox.payfast.co.za';
@@ -507,18 +508,20 @@ class API {
   Future<String> payFastPayment({
     required String amount,
     required String item_name,
+    required Map<String, dynamic> data,
   }) async {
     final queryParameters = {
       'merchant_id': '10038067', // Replace with your actual merchant ID
       'merchant_key': 'fiempzztddgyx', // Replace with your actual merchant key
       'amount': amount,
-      "m_payment_id":"1500",
+      "m_payment_id": "1500",
       'item_name': item_name,
-      'item_description': "item description",
+      'item_description': jsonEncode(data),
       // 'return_url':'yourapp://payment_success', //?orderId=${YOUR_ORDER_ID}&paymentId=${PAYFAST_ID}',
       // 'cancel_url': 'yourapp://payment_cancel', //?orderId=${YOUR_ORDER_ID}',
-      'return_url':'https://example.com/', //?orderId=${YOUR_ORDER_ID}&paymentId=${PAYFAST_ID}',
-      'cancel_url': 'https://example.com/', //?orderId=${YOUR_ORDER_ID}',
+      'return_url':
+          'https://example.com/', //?orderId=${YOUR_ORDER_ID}&paymentId=${PAYFAST_ID}',
+      'cancel_url': 'https://google.com/', //?orderId=${YOUR_ORDER_ID}',
       'notify_url': 'http://152.67.10.128:5280/api/payfast/itn',
     };
 
@@ -530,12 +533,11 @@ class API {
 class PaymentViewModel {
   final API api = API();
 
-  Future<String> startPayment(String amount, String itemName) async {
+  Future<String> startPayment(
+      String amount, String itemName, checkoutInfo) async {
     try {
       final result = await api.payFastPayment(
-        amount: amount,
-        item_name: itemName,
-      );
+          amount: amount, item_name: itemName, data: checkoutInfo);
       return result;
     } catch (e) {
       debugPrint("Error generating payment link: $e");
@@ -550,6 +552,36 @@ class ShoppingController extends GetxController {
   final _totalAmount = 0.obs;
   final PaymentViewModel _paymentViewModel =
       PaymentViewModel(); // Instantiate PaymentViewModel
+
+  // Global variable
+  Map<String, dynamic> checkoutInfo = {"buyerId": null, "data": []};
+
+  Future<void> extractCheckoutInfo(Map<String, dynamic> response) async {
+    final prefs = await SharedPreferences.getInstance();
+    int? buyerId = prefs.getInt('userId');
+
+    checkoutInfo["buyerId"] = buyerId;
+
+    List<dynamic> orders = response["\$values"] ?? [];
+    List<Map<String, dynamic>> filteredData = [];
+
+    for (var order in orders) {
+      List<dynamic> crops = order["crops"]["\$values"] ?? [];
+
+      for (var crop in crops) {
+        if (crop["status"] == "Not Confirmed") {
+          filteredData.add({
+            "farmerId": crop["farmerId"],
+            "amount": crop["amount"],
+            "quantity": crop["quantity"],
+            "orderId": order["orderId"],
+          });
+        }
+      }
+    }
+
+    checkoutInfo["data"] = filteredData;
+  }
 
   List<Map<String, dynamic>> get cartItems => _cartItems.toList();
   bool get isLoading => _isLoading.value;
@@ -578,6 +610,8 @@ class ShoppingController extends GetxController {
 
       if (response.statusCode == 200) {
         final data = jsonDecode(response.body);
+        await extractCheckoutInfo(data);
+        print(checkoutInfo);
 
         List<dynamic> orders = data["\$values"] ?? [];
         List<Map<String, dynamic>> fetchedCartItems = [];
@@ -631,7 +665,8 @@ class ShoppingController extends GetxController {
   }
 
   Future<void> deleteItem(int orderId, int cropId, int index) async {
-    final url = Uri.parse("http://152.67.10.128:5280/api/Order/cancel-order/${orderId}");
+    final url = Uri.parse(
+        "http://152.67.10.128:5280/api/Order/cancel-order/${orderId}");
 
     final Map<String, dynamic> body = {
       "orderId": orderId,
@@ -715,8 +750,8 @@ class ShoppingController extends GetxController {
     const itemName =
         "Shopping Cart Items"; // Or you can build a more detailed name
 
-    final paymentUrl =
-        await _paymentViewModel.startPayment(totalAmountFormatted, itemName);
+    final paymentUrl = await _paymentViewModel.startPayment(
+        totalAmountFormatted, itemName, checkoutInfo);
 
     if (paymentUrl.contains("example.com/error")) {
       Get.snackbar(
@@ -733,31 +768,77 @@ class ShoppingController extends GetxController {
   }
 }
 
-class WebLauncherPage extends StatelessWidget {
+// class WebLauncherPage extends StatelessWidget {
+//   final String url;
+
+//   const WebLauncherPage({Key? key, required this.url}) : super(key: key);
+
+//   Future<void> _launchUrl(BuildContext context) async {
+//     final uri = Uri.parse(url);
+
+//     if (await canLaunchUrl(uri)) {
+//       await launchUrl(uri, mode: LaunchMode.externalApplication);
+//     } else {
+//       ScaffoldMessenger.of(context).showSnackBar(
+//         const SnackBar(content: Text('Could not launch PayFast URL')),
+//       );
+//     }
+//   }
+
+//   @override
+//   Widget build(BuildContext context) {
+//     // Launch URL after the first frame is rendered
+//     WidgetsBinding.instance.addPostFrameCallback((_) => _launchUrl(context));
+
+//     return Scaffold(
+//       appBar: AppBar(title: const Text("Redirecting to PayFast")),
+//       body: const Center(child: CircularProgressIndicator()),
+//     );
+//   }
+// }
+
+class WebLauncherPage extends StatefulWidget {
   final String url;
 
   const WebLauncherPage({Key? key, required this.url}) : super(key: key);
 
-  Future<void> _launchUrl(BuildContext context) async {
-    final uri = Uri.parse(url);
+  @override
+  State<WebLauncherPage> createState() => _WebLauncherPageState();
+}
 
-    if (await canLaunchUrl(uri)) {
-      await launchUrl(uri, mode: LaunchMode.externalApplication);
-    } else {
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('Could not launch PayFast URL')),
-      );
-    }
+class _WebLauncherPageState extends State<WebLauncherPage> {
+  late final WebViewController _controller;
+
+  @override
+  void initState() {
+    super.initState();
+    _controller = WebViewController()
+      ..setJavaScriptMode(JavaScriptMode.unrestricted)
+      ..setNavigationDelegate(
+        NavigationDelegate(
+          onNavigationRequest: (NavigationRequest request) {
+            if (request.url.contains("example.com")) {
+              Navigator.pop(context);
+              Get.off(OrderConfirmationScreen());
+              return NavigationDecision.prevent;
+            }
+            else if(request.url.contains("google.com")){
+              Navigator.pop(context);
+              Get.off(OrderCancellationScreen());
+              return NavigationDecision.prevent;
+            }
+            return NavigationDecision.navigate;
+          },
+        ),
+      )
+      ..loadRequest(Uri.parse(widget.url));
   }
 
   @override
   Widget build(BuildContext context) {
-    // Launch URL after the first frame is rendered
-    WidgetsBinding.instance.addPostFrameCallback((_) => _launchUrl(context));
-
     return Scaffold(
-      appBar: AppBar(title: const Text("Redirecting to PayFast")),
-      body: const Center(child: CircularProgressIndicator()),
+      appBar: AppBar(title: const Text("PayFast Payment")),
+      body: WebViewWidget(controller: _controller),
     );
   }
 }
@@ -769,7 +850,8 @@ String formatDate(String? rawDate) {
   try {
     // Parse the raw date string
     DateTime dateTime = DateTime.parse(rawDate);
-    String formattedDate = DateFormat('dd-MM-yyyy HH:mm').format(dateTime.toLocal()); // Using toLocal() to convert to local time
+    String formattedDate = DateFormat('dd-MM-yyyy HH:mm')
+        .format(dateTime.toLocal()); // Using toLocal() to convert to local time
 
     return formattedDate;
   } catch (e) {
@@ -892,8 +974,8 @@ class ShoppingScreen extends StatelessWidget {
                         color: Colors.redAccent,
                         borderRadius: BorderRadius.circular(8),
                       ),
-                      child:
-                          const Icon(Icons.remove, color: Colors.white, size: 16),
+                      child: const Icon(Icons.remove,
+                          color: Colors.white, size: 16),
                     ),
                   ),
                 ],
@@ -980,7 +1062,7 @@ class ShoppingScreen extends StatelessWidget {
                               textAlign: TextAlign.center,
                             )),
                         const SizedBox(height: 16),
-                                                ElevatedButton(
+                        ElevatedButton(
                           onPressed: () => controller.confirmOrder(
                               context), // Call confirmOrder with context
                           style: ElevatedButton.styleFrom(

@@ -1,0 +1,2 @@
+D:/University/EC_Project/FinalEcFrontend - sajid/android/app/.cxx/Debug/s233l39v/arm64-v8a/CMakeFiles/edit_cache.dir
+D:/University/EC_Project/FinalEcFrontend - sajid/android/app/.cxx/Debug/s233l39v/arm64-v8a/CMakeFiles/rebuild_cache.dir

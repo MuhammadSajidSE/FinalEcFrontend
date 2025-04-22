@@ -1,5 +1,8 @@
 import 'dart:convert';
+import 'package:agriconnect/Views/Farmer/mainFarmer.dart';
+import 'package:agriconnect/constants/colors.dart';
 import 'package:flutter/material.dart';
+import 'package:google_fonts/google_fonts.dart';
 import 'package:http/http.dart' as http;
 import 'package:shared_preferences/shared_preferences.dart';
 
@@ -7,7 +10,6 @@ class FarmerHistotyOrder extends StatefulWidget {
   @override
   _FarmerHistotyOrderPageState createState() => _FarmerHistotyOrderPageState();
 }
-
 
 class _FarmerHistotyOrderPageState extends State<FarmerHistotyOrder> {
   List<Map<String, dynamic>> orders = [];
@@ -56,18 +58,79 @@ class _FarmerHistotyOrderPageState extends State<FarmerHistotyOrder> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: Text("Completed Orders"),
-        backgroundColor: Colors.green[700],
-      ),
       backgroundColor: Colors.green[50],
       body: orders.isEmpty
-          ? Center(child: CircularProgressIndicator(color: Colors.green))
+          ? Center(child: CircularProgressIndicator(color: MyColors.primaryColor))
           : ListView.builder(
-              itemCount: orders.length,
+              itemCount: orders.length + 1, // +1 for the header container
               itemBuilder: (context, index) {
-                final order = orders[index];
-                return OrderCard(order: order, phoneNumber: buyerPhoneNumbers[order['buyerId']] ?? "Loading...");
+                if (index == 0) {
+                  return    Column(
+                    children: [
+                      Stack(
+                        children: [
+                         
+                      Stack(
+                        children: [
+                          // Top container with background color and centered title
+                          Container(
+                            height: 100,
+                            width: double.infinity,
+                            color: MyColors.primaryColor,
+                            child:  Stack(
+                              children: [
+                                // Back Icon on the left
+                                Positioned(
+                                  top: 16,
+                                  left: 16,
+                                  child: GestureDetector(
+                                    onTap: (){
+                                       Navigator.pushReplacement(context, MaterialPageRoute(builder: (context)=>FarmerMain()));
+                                    },
+                                    child: Icon(
+                                      Icons.arrow_back,
+                                      color: MyColors.backgroundScaffoldColor,
+                                    ),
+                                  ),
+                                ),
+                      
+                                // Centered title
+                                Align(
+                                  alignment: Alignment.topCenter,
+                                  child: Padding(
+                                    padding: const EdgeInsets.only(top: 12),
+                                    child: Text(
+                                      'Completed Orders',
+                                      style: GoogleFonts.inter(
+                      fontSize: 22,
+                      fontWeight: FontWeight.w700,
+                      color: MyColors.backgroundScaffoldColor,
+                                      ),
+                                    ),
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ),
+                      
+                          
+                        ],
+                      )
+                      
+                        ],
+                      ),
+                       const SizedBox(height: 15),
+                    ],
+                  );
+                  
+                
+                } else {
+                  final order = orders[index - 1];
+                  return OrderCard(
+                    order: order,
+                    phoneNumber: buyerPhoneNumbers[order['buyerId']] ?? "Loading...",
+                  );
+                }
               },
             ),
     );
@@ -103,16 +166,43 @@ class OrderCard extends StatelessWidget {
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      Text(order['cropName'], style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold, color: Colors.green[800])),
+                      Text(
+                                order['cropName'],
+                                      style: GoogleFonts.inter(
+                      fontSize: 18,
+                      fontWeight: FontWeight.w700,
+                      color: MyColors.primaryColor,
+                                      ),
+                                    ),
+                      // Text(order['cropName'], style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold, color: Colors.green[800])),
                       SizedBox(height: 5),
-                      Text("Quantity: ${order['orderQuantity']} kg", style: TextStyle(fontSize: 16, color: Colors.green[700])),
-                      Text("Amount: \$${order['orderAmount']}", style: TextStyle(fontSize: 16, color: Colors.green[700])),
+                        Text(
+                                "Quantity: ${order['orderQuantity']} kg",
+                                      style: GoogleFonts.inter(
+                      fontSize: 16,
+                      fontWeight: FontWeight.w700,
+                      color: MyColors.primaryColor,
+                                      ),
+                                    ),
+                      // Text("Quantity: ${order['orderQuantity']} kg", style: TextStyle(fontSize: 16, color: Colors.green[700])),
+                     
+                     Text(
+                                "Amount: \$${order['orderAmount']}",
+                                      style: GoogleFonts.inter(
+                      fontSize: 16,
+                      fontWeight: FontWeight.w700,
+                      color: MyColors.primaryColor,
+                                      ),
+                                    ),
+                      // Text("Amount: \$${order['orderAmount']}", style: TextStyle(fontSize: 16, color: Colors.green[700])),
                     ],
                   ),
                 ),
               ],
             ),
-            Divider(),
+            Divider(
+              thickness: 2,
+            ),
             Row(
               children: [
                 ClipOval(
@@ -123,9 +213,35 @@ class OrderCard extends StatelessWidget {
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      Text(order['buyerName'], style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold, color: Colors.green[900])),
-                      Text(order['buyerEmail'], style: TextStyle(fontSize: 14, color: Colors.black87)),
-                      Text("Phone: $phoneNumber", style: TextStyle(fontSize: 14, color: Colors.black87)),
+                       Text(
+                                order['buyerName'],
+                                      style: GoogleFonts.inter(
+                      fontSize: 18,
+                      fontWeight: FontWeight.w700,
+                      color: MyColors.primaryColor,
+                                      ),
+                                    ),
+                      // Text(order['buyerName'], style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold, color: Colors.green[900])),
+                     
+                      Text(
+                               order['buyerEmail'],
+                                      style: GoogleFonts.inter(
+                      fontSize: 16,
+                      fontWeight: FontWeight.w700,
+                      color: MyColors.black,
+                                      ),
+                                    ),
+                      // Text(order['buyerEmail'], style: TextStyle(fontSize: 14, color: Colors.black87)),
+                      
+                       Text(
+                                "Phone: $phoneNumber",
+                                      style: GoogleFonts.inter(
+                      fontSize: 16,
+                      fontWeight: FontWeight.w700,
+                      color: MyColors.black,
+                                      ),
+                                    ),
+                      // Text("Phone: $phoneNumber", style: TextStyle(fontSize: 14, color: Colors.black87)),
                     ],
                   ),
                 ),

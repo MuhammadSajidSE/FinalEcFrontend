@@ -1,10 +1,14 @@
 import 'dart:convert';
+import 'package:agriconnect/Component/customButton.dart';
+import 'package:agriconnect/Component/customSize.dart';
 import 'package:agriconnect/Views/Buyer/mainBuyer.dart';
+import 'package:agriconnect/Views/Common/edit_profile.dart';
 import 'package:agriconnect/Views/Farmer/mainFarmer.dart';
+import 'package:agriconnect/constants/colors.dart';
 import 'package:flutter/material.dart';
+import 'package:google_fonts/google_fonts.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:http/http.dart' as http;
-
 
 class ProfileScreen extends StatefulWidget {
   @override
@@ -44,7 +48,18 @@ class _ProfileScreenState extends State<ProfileScreen> {
           MaterialPageRoute(builder: (context) => FarmerMain()),
         );
         break;
-
+      // case 'Transporter':
+      //   Navigator.pushReplacement(
+      //     context,
+      //     MaterialPageRoute(builder: (context) => Maintransporter()),
+      //   );
+      //   break;
+      // case 'Trainer':
+      //   Navigator.pushReplacement(
+      //     context,
+      //     MaterialPageRoute(builder: (context) => Maintrainer()),
+      //   );
+      //   break;
       default:
         Navigator.pop(context); // Go back to the previous screen
     }
@@ -78,69 +93,301 @@ class _ProfileScreenState extends State<ProfileScreen> {
             final roleName = userData['role']?['name'] ?? 'No Role';
             final isActive = userData['isactive'] ?? false;
 
-            return Padding(
-              padding: const EdgeInsets.all(20.0),
+            return SingleChildScrollView(
               child: Column(
                 children: [
-                  CircleAvatar(
-                    radius: 60,
-                    backgroundColor: Colors.grey.shade300,
-                    backgroundImage: imageUrl.isNotEmpty
-                        ? NetworkImage(imageUrl)
-                        : AssetImage('assets/default_avatar.png')
-                            as ImageProvider,
+                  Stack(
+                    children: [
+                      Stack(
+                        children: [
+                          // Top container with background color and centered title
+                          Container(
+                            height: 200,
+                            width: double.infinity,
+                            color: MyColors.primaryColor,
+                            child: Stack(
+                              children: [
+                                // Back Icon on the left
+                                Positioned(
+                                  top: 16,
+                                  left: 16,
+                                  child: GestureDetector(
+                                    onTap: () {
+                                      switch (roleName) {
+                                        case 'Buyer':
+                                          Navigator.pushReplacement(
+                                            context,
+                                            MaterialPageRoute(
+                                                builder: (context) =>
+                                                    BuyerMain()),
+                                          );
+                                          break;
+
+                                        case 'Farmer':
+                                          Navigator.pushReplacement(
+                                            context,
+                                            MaterialPageRoute(
+                                                builder: (context) =>
+                                                    FarmerMain()),
+                                          );
+                                          break;
+
+                                        default:
+                                          // Optionally handle unknown roles
+                                          ScaffoldMessenger.of(context)
+                                              .showSnackBar(
+                                            SnackBar(
+                                                content: Text(
+                                                    'Unknown role: $roleName')),
+                                          );
+                                      }
+                                    },
+                                    child: Icon(
+                                      Icons.arrow_back,
+                                      color: MyColors.backgroundScaffoldColor,
+                                    ),
+                                  ),
+                                ),
+
+                                // Centered title
+                                Align(
+                                  alignment: Alignment.topCenter,
+                                  child: Padding(
+                                    padding: const EdgeInsets.only(top: 16),
+                                    child: Text(
+                                      'Profile',
+                                      style: GoogleFonts.inter(
+                                        fontSize: 22,
+                                        fontWeight: FontWeight.w700,
+                                        color: MyColors.backgroundScaffoldColor,
+                                      ),
+                                    ),
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ),
+
+                          // Avatar image with edit icon overlay
+                          Container(
+                            margin: EdgeInsets.only(top: 120),
+                            child: Center(
+                              child: Stack(
+                                children: [
+                                  // Avatar
+                                  Stack(
+                                    children: [
+                                      Container(
+                                        padding: EdgeInsets.all(5),
+                                        decoration: BoxDecoration(
+                                          borderRadius:
+                                              BorderRadius.circular(80),
+                                          color: Colors.white,
+                                        ),
+                                        child: CircleAvatar(
+                                          radius: 60,
+                                          backgroundColor: Colors.grey.shade300,
+                                          backgroundImage: imageUrl.isNotEmpty
+                                              ? NetworkImage(imageUrl)
+                                              : AssetImage(
+                                                      'assets/default_avatar.png')
+                                                  as ImageProvider,
+                                        ),
+                                      ),
+                                      Positioned(
+                                        bottom: 4,
+                                        right: 4,
+                                        child: Container(
+                                          padding: EdgeInsets.all(6),
+                                          decoration: BoxDecoration(
+                                            color: MyColors.primaryColor,
+                                            shape: BoxShape.circle,
+                                            border: Border.all(
+                                                color: Colors.white, width: 2),
+                                          ),
+                                          child: GestureDetector(
+                                            onTap: () {
+                                              Navigator.pushReplacement(
+                                                  context,
+                                                  MaterialPageRoute(
+                                                      builder: (context) =>
+                                                          EditProfileScreen()));
+                                            },
+                                            child: Icon(
+                                              Icons.edit,
+                                              size: 18,
+                                              color: Colors.white,
+                                            ),
+                                          ),
+                                        ),
+                                      ),
+                                    ],
+                                  )
+
+                                  // Edit icon at bottom right of avatar
+                                ],
+                              ),
+                            ),
+                          ),
+                        ],
+                      )
+
+                      // Profile Avatar
+                    ],
                   ),
                   const SizedBox(height: 15),
+                  // Text(
+                  //   username,
+                  //   style: GoogleFonts.inter(
+                  //     fontSize: 20,
+                  //     fontWeight: FontWeight.w700,
+                  //     color: MyColors.primaryColor
+                  //   ),
+                  // ),
                   Text(
                     username,
-                    style: const TextStyle(
-                        fontSize: 22, fontWeight: FontWeight.bold),
+                    textAlign: TextAlign.left,
+                    style: TextStyle(
+                      fontFamily: 'Gilroy',
+                      fontSize: 28,
+                      height: 0.9,
+                      // fontWeight: FontWeight.bold,
+                      color: MyColors.profileColor,
+                      // color: MyColors.secondaryColor,
+                    ),
                   ),
                   Text(
-                    roleName,
-                    style: TextStyle(fontSize: 16, color: Colors.grey.shade700),
+                    email,
+                    style: GoogleFonts.inter(
+                        fontSize: 20,
+                        fontWeight: FontWeight.bold,
+                        color: MyColors.profileColor),
                   ),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      Icon(Icons.phone, color: MyColors.profileColor),
+                      Text(
+                        phoneNumber,
+                        style: GoogleFonts.inter(
+                            fontSize: 20,
+                            fontWeight: FontWeight.bold,
+                            color: MyColors.profileColor),
+                      ),
+                      SizedBox(width: 10),
+                      Icon(Icons.location_on, color: MyColors.profileColor),
+                      Text(
+                        address,
+                        style: GoogleFonts.inter(
+                            fontSize: 20,
+                            fontWeight: FontWeight.bold,
+                            color: MyColors.profileColor),
+                      ),
+                    ],
+                  ),
+                  // Text(
+                  //   roleName,
+                  //   style: TextStyle(fontSize: 16, color: Colors.grey.shade700),
+                  // ),
+                  //  Text(
+                  //     roleName,
+                  //     style: GoogleFonts.inter(
+                  //       fontSize: 20,
+                  //       fontWeight: FontWeight.bold,
+                  //       color: MyColors.profileColor
+                  //     ),
+                  //   ),
+
                   const SizedBox(height: 10),
-                  Chip(
-                    label: Text(
-                      isActive ? "Active" : "Deactivated",
-                      style: const TextStyle(color: Colors.white),
-                    ),
-                    backgroundColor: isActive ? Colors.green : Colors.red,
+                  Row(
+                    children: [
+                      // Chip(
+                      //   label: Text(
+                      //     isActive ? "Active" : "Deactivated",
+                      //     style: const TextStyle(color: Colors.white),
+                      //   ),
+                      //   backgroundColor: isActive ? Colors.green : Colors.red,
+                      // ),
+                      Expanded(
+                        child: Container(
+                          margin: EdgeInsets.only(left: 15),
+                          child: CustomButton(
+                            radius: CustomSize().customWidth(context) / 10,
+                            height: CustomSize().customHeight(context) / 15,
+                            width: CustomSize().customWidth(context),
+                            title: isActive ? "Active" : "Deactivated",
+                            loading: false,
+                            color:
+                                isActive ? MyColors.primaryColor : Colors.red,
+                            onTap: () {},
+                          ),
+                        ),
+                      ),
+                      Expanded(
+                        child: Container(
+                          margin: EdgeInsets.only(left: 15, right: 15),
+                          child: CustomButton(
+                            radius: CustomSize().customWidth(context) / 10,
+                            height: CustomSize().customHeight(context) / 15,
+                            width: CustomSize().customWidth(context),
+                            title: roleName,
+                            loading: false,
+                            color: MyColors.primaryColor,
+                            onTap: () {},
+                          ),
+                        ),
+                      )
+                    ],
                   ),
+                  //  Container(
+                  //     margin: EdgeInsets.only(top: 12,left: 15,right: 15),
+
+                  //    child: CustomButton(
+                  //       radius: CustomSize().customWidth(context) / 10,
+                  //       height: CustomSize().customHeight(context) / 15,
+                  //       width: CustomSize().customWidth(context)/2 ,
+                  //       title: "Edit Profile",
+
+                  //       loading: false,
+                  //       color: MyColors.profileColor,
+                  //       onTap: () {
+
+                  //       },
+                  //     ),
+                  //  ),
                   const SizedBox(height: 20),
-                  Card(
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(15),
-                    ),
-                    elevation: 3,
-                    child: ListTile(
-                      leading: const Icon(Icons.email, color: Colors.blue),
-                      title: Text(email),
-                    ),
-                  ),
-                  const SizedBox(height: 10),
-                  Card(
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(15),
-                    ),
-                    elevation: 3,
-                    child: ListTile(
-                      leading: const Icon(Icons.phone, color: Colors.green),
-                      title: Text(phoneNumber),
-                    ),
-                  ),
-                  const SizedBox(height: 10),
-                  Card(
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(15),
-                    ),
-                    elevation: 3,
-                    child: ListTile(
-                      leading: const Icon(Icons.location_on, color: Colors.red),
-                      title: Text(address),
-                    ),
-                  ),
+                  // Card(
+                  //   shape: RoundedRectangleBorder(
+                  //     borderRadius: BorderRadius.circular(15),
+                  //   ),
+                  //   elevation: 3,
+                  //   child: ListTile(
+                  //     leading: const Icon(Icons.email, color: Colors.blue),
+                  //     title: Text(email),
+                  //   ),
+                  // ),
+                  // const SizedBox(height: 10),
+                  // Card(
+                  //   shape: RoundedRectangleBorder(
+                  //     borderRadius: BorderRadius.circular(15),
+                  //   ),
+                  //   elevation: 3,
+                  //   child: ListTile(
+                  //     leading: const Icon(Icons.phone, color: Colors.green),
+                  //     title: Text(phoneNumber),
+                  //   ),
+                  // ),
+                  // const SizedBox(height: 10),
+                  // Card(
+                  //   shape: RoundedRectangleBorder(
+                  //     borderRadius: BorderRadius.circular(15),
+                  //   ),
+                  //   elevation: 3,
+                  //   child: ListTile(
+                  //     leading: const Icon(Icons.location_on, color: Colors.red),
+                  //     title: Text(address),
+                  //   ),
+                  // ),
                 ],
               ),
             );

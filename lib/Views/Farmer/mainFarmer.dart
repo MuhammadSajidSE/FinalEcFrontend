@@ -1,37 +1,40 @@
+
+import 'package:agriconnect/chatbot_screen.dart';
+import 'package:flutter/material.dart';
+import 'package:motion_tab_bar_v2/motion-tab-bar.dart';
+import 'package:google_fonts/google_fonts.dart';
+
+
 import 'package:agriconnect/Controllers/FarmerController.dart';
-import 'package:agriconnect/Controllers/LoginController.dart';
 import 'package:agriconnect/Views/Common/profile_screen.dart';
 import 'package:agriconnect/Views/Farmer/AddCrop.dart';
-import 'package:agriconnect/Views/Farmer/Complete_order.dart';
 import 'package:agriconnect/Views/Farmer/cropslist.dart';
-import 'package:agriconnect/Views/Farmer/histoty_order.dart';
-import 'package:flutter/material.dart';
+import 'package:agriconnect/constants/colors.dart';
+import 'package:motion_tab_bar_v2/motion-tab-controller.dart';
 
 class FarmerMain extends StatefulWidget {
-  final LoginController _controller = LoginController();
-  FarmerMain({Key? key}) : super(key: key);
+  const FarmerMain({Key? key}) : super(key: key);
 
   @override
-  _FarmerMainState createState() => _FarmerMainState();
+  State<FarmerMain> createState() => _FarmerMainState();
 }
 
-class _FarmerMainState extends State<FarmerMain> {
+class _FarmerMainState extends State<FarmerMain> with TickerProviderStateMixin {
   final Farmercontroller _controller = Farmercontroller();
+  late MotionTabBarController _motionTabBarController;
+
   String? imageUrl;
   String? username;
   String? userId;
 
-  int _selectedIndex = 0;
-
-  final List<Widget> _screens = [
-    CropListScreen(),
-    AddCrop(),
-    FarmerOrdersScreen(),
-  ];
-
   @override
   void initState() {
     super.initState();
+    _motionTabBarController = MotionTabBarController(
+      initialIndex: 0,
+      length: 4,
+      vsync: this,
+    );
     _loadUserData();
   }
 
@@ -44,114 +47,79 @@ class _FarmerMainState extends State<FarmerMain> {
     });
   }
 
-  void _onItemTapped(int index) {
-    setState(() {
-      _selectedIndex = index;
-    });
+  @override
+  void dispose() {
+    _motionTabBarController.dispose();
+    super.dispose();
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: const Text('Farmer Dashboard'),
-        actions: [
-          if (imageUrl != null)
-            Padding(
-              padding: const EdgeInsets.only(right: 8.0),
-              child: CircleAvatar(
-                backgroundImage: NetworkImage(imageUrl!),
-                radius: 20,
-              ),
-            ),
+
+      // appBar: AppBar(
+      //   title: const Text('Farmer Dashboard'),
+      //   actions: [
+      //     if (imageUrl != null)
+      //       Padding(
+      //         padding: const EdgeInsets.only(right: 8.0),
+      //         child: CircleAvatar(
+      //           backgroundImage: NetworkImage(imageUrl!),
+      //           radius: 20,
+      //         ),
+      //       ),
+      //   ],
+      // ),
+      
+      body: TabBarView(
+        physics: const NeverScrollableScrollPhysics(),
+        controller: _motionTabBarController,
+        children: <Widget>[
+          _buildHomeScreen(),
+          _buildShoppingScreen(),
+          _buildProfileScreen(),
+          _buildChatBotScreen(),
+
         ],
       ),
-      drawer: Drawer(
-        child: Column(
-          children: [
-            UserAccountsDrawerHeader(
-              currentAccountPicture: CircleAvatar(
-                backgroundImage:
-                    imageUrl != null ? NetworkImage(imageUrl!) : null,
-                child: imageUrl == null ? const Icon(Icons.person) : null,
-              ),
-              accountName: Text(username ?? 'N/A'),
-              accountEmail: Text(userId ?? 'N/A'),
-            ),
-            ListTile(
-              leading: const Icon(Icons.home),
-              title: const Text('Home'),
-              onTap: () {
-                setState(() => _selectedIndex = 0);
-                Navigator.pop(context); // Close the drawer
-              },
-            ),
-            ListTile(
-              leading: const Icon(Icons.person),
-              title: const Text('Profile'),
-              onTap: () {
-                setState(() => _selectedIndex = 1);
-                Navigator.pop(context);
-              },
-            ),
-            ListTile(
-              leading: const Icon(Icons.shopping_cart),
-              title: const Text('Add Crop'),
-              onTap: () {
-                setState(() => _selectedIndex = 2);
-                Navigator.pop(context);
-              },
-            ),
-            ListTile(
-              leading: const Icon(Icons.message),
-              title: const Text('Messages'),
-              onTap: () {},
-            ),
-            ListTile(
-              leading: const Icon(Icons.settings),
-              title: const Text('Settings'),
-              onTap: () {},
-            ),
-            ListTile(
-              leading: const Icon(Icons.settings),
-              title: const Text('History Order'),
-              onTap: () {
-                                Navigator.pushReplacement(
-                  context,
-                  MaterialPageRoute(
-                      builder: (context) => FarmerHistotyOrder()),
-                );
-              },
-            ),
-            ListTile(
-              leading: const Icon(Icons.logout),
-              title: const Text('Logout'),
-              onTap: () {
-                LoginController().logout(context);
-              },
-            ),
-          ],
+      bottomNavigationBar: MotionTabBar(
+        controller: _motionTabBarController,
+        initialSelectedTab: "Home",
+        labels: const ["Home", "Cart","Profile","ChatBot" ],
+        icons: const [Icons.home, Icons.shopping_cart,Icons.person, Icons.smart_toy],
+        tabSize: 50,
+        tabBarHeight: 55,
+        textStyle: const TextStyle(
+          fontSize: 12,
+          color: Colors.black,
+          fontWeight: FontWeight.w500,
         ),
-      ),
-      body: _screens[_selectedIndex],
-      bottomNavigationBar: BottomNavigationBar(
-        currentIndex: _selectedIndex,
-        onTap: _onItemTapped,
-        items: const [
-          BottomNavigationBarItem(
-            icon: Icon(Icons.home),
-            label: 'Home',
-          ),
-          BottomNavigationBarItem(
-            icon: Icon(Icons.add),
-            label: 'Add Crop',
-          ),
-          BottomNavigationBarItem(
-            icon: Icon(Icons.person),
-            label: 'Order',
-          ),
-        ],
+        tabIconSize: 28.0,
+        tabIconSelectedSize: 32.0,
+        tabSelectedColor: MyColors.primaryColor,
+        tabIconSelectedColor: Colors.white,
+        tabBarColor: Colors.white,
+        onTabItemSelected: (int value) {
+          setState(() {
+            _motionTabBarController.index = value;
+          });
+        },
       ),
     );
   }
+
+
+  TextStyle _drawerTextStyle() => GoogleFonts.inter(
+        fontSize: 18,
+        fontWeight: FontWeight.w600,
+        color: MyColors.black,
+      );
+
+  Widget _buildHomeScreen() => CropListScreen();
+
+  Widget _buildProfileScreen() => ProfileScreen();
+
+  Widget _buildShoppingScreen() => AddCrop();
+
+  Widget _buildChatBotScreen() => ChatBotScreen();
 }

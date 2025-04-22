@@ -6,17 +6,15 @@ import 'package:shared_preferences/shared_preferences.dart';
 class ContactsScreen extends StatelessWidget {
   final String phone;
   ContactsScreen({required this.phone});
-
   final DatabaseReference dbRef = FirebaseDatabase.instance.ref();
-
 
   @override
   Widget build(BuildContext context) {
+    print(phone);
     return Scaffold(
       appBar: AppBar(
         title: Text('Contacts'),
         backgroundColor: Colors.green,
-
       ),
       body: StreamBuilder(
         stream: dbRef.child('users').onValue,

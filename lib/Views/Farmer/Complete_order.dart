@@ -1,7 +1,11 @@
+import 'package:agriconnect/Views/Farmer/mainFarmer.dart';
+import 'package:agriconnect/constants/colors.dart';
 import 'package:flutter/material.dart';
+import 'package:google_fonts/google_fonts.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
+
 
 class FarmerOrdersScreen extends StatefulWidget {
   const FarmerOrdersScreen({Key? key}) : super(key: key);
@@ -90,90 +94,193 @@ class _FarmerOrdersScreenState extends State<FarmerOrdersScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: const Text("Confirmed Orders")),
-      body: isLoading
-          ? const Center(child: CircularProgressIndicator())
-          : orders.isEmpty
-              ? const Center(child: Text("No confirmed orders found."))
-              : ListView.builder(
-                  itemCount: orders.length,
-                  itemBuilder: (context, index) {
-                    var order = orders[index];
-                    var buyer = order["buyerDetails"] ?? {};
-
-                    return Card(
-                      margin: const EdgeInsets.all(12),
-                      elevation: 4,
-                      shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(10)),
-                      child: Padding(
-                        padding: const EdgeInsets.all(12),
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            // Crop Image and Name
-                            Row(
-                              children: [
-                                ClipRRect(
-                                  borderRadius: BorderRadius.circular(10),
-                                  child: Image.network(
-                                    order["cropImage"],
-                                    width: 80,
-                                    height: 80,
-                                    fit: BoxFit.cover,
-                                  ),
-                                ),
-                                const SizedBox(width: 10),
-                                Column(
-                                  crossAxisAlignment: CrossAxisAlignment.start,
-                                  children: [
-                                    Text(order["cropName"],
-                                        style: const TextStyle(
-                                            fontSize: 18,
-                                            fontWeight: FontWeight.bold)),
-                                    Text("Quantity: ${order["orderQuantity"]}",
-                                        style: const TextStyle(fontSize: 16)),
-                                    Text("Amount: Rs. ${order["orderAmount"]}",
-                                        style: const TextStyle(fontSize: 16)),
-                                  ],
-                                ),
-                              ],
-                            ),
-                            const Divider(),
-                            // Buyer Info
-                            Row(
-                              children: [
-                                ClipRRect(
-                                  borderRadius: BorderRadius.circular(10),
-                                  child: Image.network(
-                                    buyer["imageUrl"] ?? "",
-                                    width: 50,
-                                    height: 50,
-                                    fit: BoxFit.cover,
-                                  ),
-                                ),
-                                const SizedBox(width: 10),
-                                Column(
-                                  crossAxisAlignment: CrossAxisAlignment.start,
-                                  children: [
-                                    Text(buyer["userName"] ?? "Unknown",
-                                        style: const TextStyle(
-                                            fontSize: 16,
-                                            fontWeight: FontWeight.bold)),
-                                    Text(buyer["address"] ?? "No address",
-                                        style: const TextStyle(fontSize: 14)),
-                                    Text(buyer["phoneNumber"] ?? "No phone",
-                                        style: const TextStyle(fontSize: 14)),
-                                  ],
-                                ),
-                              ],
-                            ),
-                          ],
+      body: Column(
+        children: [
+          // Custom Header
+          Stack(
+            children: [
+              Container(
+                height: 100,
+                width: double.infinity,
+                color: MyColors.primaryColor,
+                child: Stack(
+                  children: [
+                    // Back Button
+                    Positioned(
+                      top: 16,
+                      left: 16,
+                      child: GestureDetector(
+                        onTap: () {
+                          Navigator.pushReplacement(
+                            context,
+                            MaterialPageRoute(
+                                builder: (context) => FarmerMain()),
+                          );
+                        },
+                        child: Icon(
+                          Icons.arrow_back,
+                          color: MyColors.backgroundScaffoldColor,
                         ),
                       ),
-                    );
-                  },
+                    ),
+                    // Centered Title
+                    Align(
+                      alignment: Alignment.topCenter,
+                      child: Padding(
+                        padding: const EdgeInsets.only(top: 12),
+                        child: Text(
+                          'Confirmed Orders',
+                          style: GoogleFonts.inter(
+                            fontSize: 22,
+                            fontWeight: FontWeight.w700,
+                            color: MyColors.backgroundScaffoldColor,
+                          ),
+                        ),
+                      ),
+                    ),
+                  ],
                 ),
+              ),
+            ],
+          ),
+          const SizedBox(height: 15),
+
+          // Body Section
+          Expanded(
+            child: isLoading
+                ? Center(
+                    child: CircularProgressIndicator(
+                      backgroundColor: MyColors.primaryColor,
+                    ),
+                  )
+                : orders.isEmpty
+                    ? Center(
+                        child: Text(
+                          "No confirmed orders found.",
+                          style: GoogleFonts.inter(
+                            fontSize: 18,
+                            fontWeight: FontWeight.w700,
+                            color: MyColors.black,
+                          ),
+                        ),
+                      )
+                    : ListView.builder(
+                        itemCount: orders.length,
+                        itemBuilder: (context, index) {
+                          var order = orders[index];
+                          var buyer = order["buyerDetails"] ?? {};
+
+                          return Card(
+                            margin: const EdgeInsets.all(12),
+                            elevation: 4,
+                            shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(10)),
+                            child: Padding(
+                              padding: const EdgeInsets.all(12),
+                              child: Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  // Crop Image and Name
+                                  Row(
+                                    children: [
+                                      ClipRRect(
+                                        borderRadius: BorderRadius.circular(10),
+                                        child: Image.network(
+                                          order["cropImage"],
+                                          width: 80,
+                                          height: 80,
+                                          fit: BoxFit.cover,
+                                        ),
+                                      ),
+                                      const SizedBox(width: 10),
+                                      Column(
+                                        crossAxisAlignment:
+                                            CrossAxisAlignment.start,
+                                        children: [
+                                          Text(
+                                            order['cropName'],
+                                            style: GoogleFonts.inter(
+                                              fontSize: 18,
+                                              fontWeight: FontWeight.w700,
+                                              color: MyColors.primaryColor,
+                                            ),
+                                          ),
+                                          Text(
+                                            "Quantity: ${order["orderQuantity"]}",
+                                            style: GoogleFonts.inter(
+                                              fontSize: 16,
+                                              fontWeight: FontWeight.w700,
+                                              color: MyColors.primaryColor,
+                                            ),
+                                          ),
+                                          Text(
+                                            "Amount: Rs. ${order["orderAmount"]}",
+                                            style: GoogleFonts.inter(
+                                              fontSize: 16,
+                                              fontWeight: FontWeight.w700,
+                                              color: MyColors.primaryColor,
+                                            ),
+                                          ),
+                                        ],
+                                      ),
+                                    ],
+                                  ),
+                                  const Divider(thickness: 2),
+                                  // Buyer Info
+                                  Row(
+                                    children: [
+                                      ClipRRect(
+                                        borderRadius: BorderRadius.circular(10),
+                                        child: Image.network(
+                                          buyer["imageUrl"] ?? "",
+                                          width: 50,
+                                          height: 50,
+                                          fit: BoxFit.cover,
+                                        ),
+                                      ),
+                                      const SizedBox(width: 10),
+                                      Column(
+                                        crossAxisAlignment:
+                                            CrossAxisAlignment.start,
+                                        children: [
+                                          Text(
+                                            buyer["userName"] ?? "Unknown",
+                                            style: GoogleFonts.inter(
+                                              fontSize: 18,
+                                              fontWeight: FontWeight.w700,
+                                              color: MyColors.primaryColor,
+                                            ),
+                                          ),
+                                          Text(
+                                            buyer["address"] ?? "No address",
+                                            style: GoogleFonts.inter(
+                                              fontSize: 16,
+                                              fontWeight: FontWeight.w700,
+                                              color: MyColors.black,
+                                            ),
+                                          ),
+                                          Text(
+                                            buyer["phoneNumber"] ??
+                                                "No phone",
+                                            style: GoogleFonts.inter(
+                                              fontSize: 16,
+                                              fontWeight: FontWeight.w700,
+                                              color: MyColors.black,
+                                            ),
+                                          ),
+                                        ],
+                                      ),
+                                    ],
+                                  ),
+                                ],
+                              ),
+                            ),
+                          );
+                        },
+                      ),
+          ),
+        ],
+      ),
     );
   }
 }
