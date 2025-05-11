@@ -1406,7 +1406,7 @@ class _CropListScreenState extends State<CropListScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       extendBodyBehindAppBar: true,
-      backgroundColor: Colors.transparent,
+      backgroundColor: MyColors.backgroundScaffoldColor,
        appBar: AppBar(
       backgroundColor: Colors.transparent,
 

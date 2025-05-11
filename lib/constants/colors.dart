@@ -9,6 +9,7 @@ class MyColors {
   static const Color green = Colors.green;
   static const Color red = Colors.red;
   static const Color black = Colors.black;
+  static const Color white = Colors.white;
   static Color backgroundScaffoldColor = Color.fromARGB(255, 255, 255, 255);
   static const Color profileColor = Color(0xff3D405B);
 }
