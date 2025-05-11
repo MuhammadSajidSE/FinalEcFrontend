@@ -2104,6 +2104,8 @@ import 'package:agriconnect/Views/Order/detailed.dart';
 import 'package:agriconnect/Views/Order/shoppingCard.dart';
 import 'package:agriconnect/constants/colors.dart';
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
+import 'package:get/get_core/src/get_main.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
@@ -2225,10 +2227,10 @@ class _BuyerMainState extends State<BuyerMain> with TickerProviderStateMixin {
                       children: [
                         Text('Good morning',
                             style: TextStyle(
-                                color: Colors.grey[600], fontSize: 14)),
+                                color: MyColors.primaryColor, fontSize: 14)),
                         Text(username!,
                             style: TextStyle(
-                                fontSize: 22, fontWeight: FontWeight.bold)),
+                                fontSize: 22, fontWeight: FontWeight.bold,color: MyColors.primaryColor,)),
                       ],
                     ),
                     if (imageUrl != null)
@@ -2285,6 +2287,7 @@ class _BuyerMainState extends State<BuyerMain> with TickerProviderStateMixin {
                   children: [
                     Text('Available Crops',
                         style: TextStyle(
+                          color: MyColors.primaryColor,
                             fontSize: 18, fontWeight: FontWeight.bold)),
                     // You might want to add a "View All" button here if you have many crops
                   ],
@@ -2412,57 +2415,56 @@ class _BuyerMainState extends State<BuyerMain> with TickerProviderStateMixin {
                     child: imageUrl == null ? const Icon(Icons.person) : null,
                   ),
                   accountName: Text(
-                username ?? 'N/A',
-                style: GoogleFonts.inter(
-                  fontSize: 18,
-                  fontWeight: FontWeight.w600,
-                  color: MyColors.backgroundScaffoldColor,
-                ),
-              ),
-
-              accountEmail: Text(
-                "${username}.@gmailcom" ?? "N/A",
-                style: GoogleFonts.inter(
-                  fontSize: 18,
-                  fontWeight: FontWeight.w600,
-                  color: MyColors.backgroundScaffoldColor,
-                ),
-              ),
+                    username ?? 'N/A',
+                    style: GoogleFonts.inter(
+                      fontSize: 18,
+                      fontWeight: FontWeight.w600,
+                      color: MyColors.backgroundScaffoldColor,
+                    ),
+                  ),
+                  accountEmail: Text(
+                    "${username}.@gmailcom" ?? "N/A",
+                    style: GoogleFonts.inter(
+                      fontSize: 18,
+                      fontWeight: FontWeight.w600,
+                      color: MyColors.backgroundScaffoldColor,
+                    ),
+                  ),
                 ),
                 ListTile(
-              leading: const Icon(Icons.home),
-              title: Text(
-                "Home",
-                style: GoogleFonts.inter(
-                  fontSize: 18,
-                  fontWeight: FontWeight.w600,
-                  color: MyColors.black,
-                ),
-              ),
+                  leading: const Icon(Icons.home),
+                  title: Text(
+                    "Home",
+                    style: GoogleFonts.inter(
+                      fontSize: 18,
+                      fontWeight: FontWeight.w600,
+                      color: MyColors.black,
+                    ),
+                  ),
                   onTap: () => _motionTabBarController!.index = 0,
                 ),
-                 ListTile(
-              leading: const Icon(Icons.home),
-              title: Text(
-                'Profile',
-                style: GoogleFonts.inter(
-                  fontSize: 18,
-                  fontWeight: FontWeight.w600,
-                  color: MyColors.black,
-                ),
-              ),
+                ListTile(
+                  leading: const Icon(Icons.home),
+                  title: Text(
+                    'Profile',
+                    style: GoogleFonts.inter(
+                      fontSize: 18,
+                      fontWeight: FontWeight.w600,
+                      color: MyColors.black,
+                    ),
+                  ),
                   onTap: () => _motionTabBarController!.index = 1,
                 ),
                 ListTile(
-              leading: const Icon(Icons.shopping_cart),
-              title: Text(
-                "Cart",
-                style: GoogleFonts.inter(
-                  fontSize: 18,
-                  fontWeight: FontWeight.w600,
-                  color: MyColors.black,
-                ),
-              ),
+                  leading: const Icon(Icons.shopping_cart),
+                  title: Text(
+                    "Cart",
+                    style: GoogleFonts.inter(
+                      fontSize: 18,
+                      fontWeight: FontWeight.w600,
+                      color: MyColors.black,
+                    ),
+                  ),
                   onTap: () => _motionTabBarController!.index = 2,
                 ),
                 // ListTile(
@@ -2473,15 +2475,15 @@ class _BuyerMainState extends State<BuyerMain> with TickerProviderStateMixin {
                 //   },
                 // ),
                 ListTile(
-              title: Text(
-                "Ordered",
-                style: GoogleFonts.inter(
-                  fontSize: 18,
-                  fontWeight: FontWeight.w600,
-                  color: MyColors.black,
-                ),
-              ),
-              leading: const Icon(Icons.shopping_cart_rounded),
+                  title: Text(
+                    "Ordered",
+                    style: GoogleFonts.inter(
+                      fontSize: 18,
+                      fontWeight: FontWeight.w600,
+                      color: MyColors.black,
+                    ),
+                  ),
+                  leading: const Icon(Icons.shopping_cart_rounded),
                   onTap: () {
                     Navigator.pushReplacement(
                       context,
@@ -2491,15 +2493,15 @@ class _BuyerMainState extends State<BuyerMain> with TickerProviderStateMixin {
                   },
                 ),
                 ListTile(
-              leading: const Icon(Icons.money),
-              title: Text(
-                "Transaction",
-                style: GoogleFonts.inter(
-                  fontSize: 18,
-                  fontWeight: FontWeight.w600,
-                  color: MyColors.black,
-                ),
-              ),
+                  leading: const Icon(Icons.money),
+                  title: Text(
+                    "Transaction",
+                    style: GoogleFonts.inter(
+                      fontSize: 18,
+                      fontWeight: FontWeight.w600,
+                      color: MyColors.black,
+                    ),
+                  ),
                   onTap: () {
                     Navigator.pushReplacement(
                       context,
@@ -2510,15 +2512,15 @@ class _BuyerMainState extends State<BuyerMain> with TickerProviderStateMixin {
                   },
                 ),
                 ListTile(
-              leading: const Icon(Icons.history),
-              title: Text(
-                "History Order",
-                style: GoogleFonts.inter(
-                  fontSize: 18,
-                  fontWeight: FontWeight.w600,
-                  color: MyColors.black,
-                ),
-              ),
+                  leading: const Icon(Icons.history),
+                  title: Text(
+                    "History Order",
+                    style: GoogleFonts.inter(
+                      fontSize: 18,
+                      fontWeight: FontWeight.w600,
+                      color: MyColors.black,
+                    ),
+                  ),
                   onTap: () {
                     Navigator.pushReplacement(
                       context,
@@ -2526,24 +2528,24 @@ class _BuyerMainState extends State<BuyerMain> with TickerProviderStateMixin {
                     );
                   },
                 ),
-                 Row(
-              children: [
-                Container(
-                  margin: EdgeInsets.only(left: 8, top: 24),
-                  child: CustomButton(
-                    radius: CustomSize().customWidth(context) / 10,
-                    height: CustomSize().customHeight(context) / 15,
-                    width: CustomSize().customWidth(context) / 2,
-                    title: "Logout",
-                    loading: false,
-                    color: MyColors.primaryColor,
-                    onTap: () {
-                      LoginController().logout(context);
-                    },
-                  ),
+                Row(
+                  children: [
+                    Container(
+                      margin: EdgeInsets.only(left: 8, top: 24),
+                      child: CustomButton(
+                        radius: CustomSize().customWidth(context) / 10,
+                        height: CustomSize().customHeight(context) / 15,
+                        width: CustomSize().customWidth(context) / 2,
+                        title: "Logout",
+                        loading: false,
+                        color: MyColors.primaryColor,
+                        onTap: () {
+                          LoginController().logout(context);
+                        },
+                      ),
+                    ),
+                  ],
                 ),
-              ],
-            ),
               ],
             ),
           ),
@@ -2578,6 +2580,10 @@ class _BuyerMainState extends State<BuyerMain> with TickerProviderStateMixin {
         onTabItemSelected: (int value) {
           setState(() {
             _motionTabBarController!.index = value;
+            // If Cart tab is selected (index 2)
+            if (value == 2) {
+              Get.find<ShoppingController>().fetchCartItems();
+            }
           });
         },
       ),
@@ -2615,10 +2621,10 @@ class CropGridCard extends StatelessWidget {
           borderRadius: BorderRadius.circular(15.0),
           boxShadow: [
             BoxShadow(
-              color: Colors.grey.withOpacity(0.2),
+              color: MyColors.primaryColor.withOpacity(0.4),
               spreadRadius: 1,
-              blurRadius: 3,
-              offset: Offset(0, 2),
+              blurRadius: 5,
+              offset: Offset(0, 1),
             ),
           ],
         ),

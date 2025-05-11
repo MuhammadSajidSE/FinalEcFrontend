@@ -101,6 +101,12 @@ class ShoppingController extends GetxController {
     fetchCartItems();
   }
 
+  @override
+  void onReady() {
+    super.onReady();
+    fetchCartItems(); // refresh every time the screen comes into view
+  }
+
   Future<void> fetchCartItems() async {
     _isLoading.value = true;
     try {
@@ -297,12 +303,11 @@ class _WebLauncherPageState extends State<WebLauncherPage> {
         NavigationDelegate(
           onNavigationRequest: (NavigationRequest request) {
             if (request.url.contains("example.com")) {
-              Navigator.pop(context);
+              // Navigator.pop(context);
               Get.off(OrderConfirmationScreen());
               return NavigationDecision.prevent;
-            }
-            else if(request.url.contains("google.com")){
-              Navigator.pop(context);
+            } else if (request.url.contains("google.com")) {
+              // Navigator.pop(context);
               Get.off(OrderCancellationScreen());
               return NavigationDecision.prevent;
             }
@@ -344,9 +349,8 @@ class ShoppingScreen extends StatelessWidget {
 
   ShoppingScreen({super.key});
   void refreshCartItems() {
-  controller.fetchCartItems();
-}
-
+    controller.fetchCartItems();
+  }
 
   Widget _buildItem(BuildContext context, int index) {
     final item = controller.cartItems[index];
@@ -354,8 +358,20 @@ class ShoppingScreen extends StatelessWidget {
       padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
       child: Container(
         decoration: BoxDecoration(
-          color: Colors.white.withOpacity(0.8),
-          borderRadius: BorderRadius.circular(10),
+          color: Colors.white.withOpacity(0.9),
+          borderRadius: BorderRadius.circular(15),
+          border: Border.all(
+            color: MyColors.primaryColor,
+            width: 0.1,
+            style: BorderStyle.solid,
+          ),
+          boxShadow: [
+            BoxShadow(
+              color: MyColors.primaryColor.withOpacity(0.3),
+              blurRadius: 5,
+              offset: Offset(0, 2),
+            ),
+          ],
         ),
         child: Padding(
           padding: const EdgeInsets.all(12.0),
@@ -480,16 +496,16 @@ class ShoppingScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      extendBodyBehindAppBar: true,
-      appBar: AppBar(
-        title: Text(
-          "Shopping Cart",
-          style: TextStyle(
-              color: MyColors.primaryColor, fontWeight: FontWeight.w900),
-        ),
-        backgroundColor: Colors.transparent,
-        elevation: 0,
-      ),
+      // extendBodyBehindAppBar: true,
+      // appBar: AppBar(
+      //   title: Text(
+      //     "Shopping Cart",
+      //     style: TextStyle(
+      //         color: MyColors.primaryColor, fontWeight: FontWeight.w900),
+      //   ),
+      //   backgroundColor: Colors.transparent,
+      //   elevation: 0,
+      // ),
       body: Container(
         decoration: const BoxDecoration(
           image: DecorationImage(
@@ -518,22 +534,35 @@ class ShoppingScreen extends StatelessWidget {
           } else {
             return Column(
               children: [
-                Expanded(
-  child: RefreshIndicator(
-    onRefresh: () async {
-      controller.fetchCartItems();  // ✅ Refresh from server
-    },
-    child: ListView.builder(
-                    itemCount: controller.cartItems.length,
-                    itemBuilder: _buildItem,
+                const SizedBox(height: 46), // slight spacing from top
+                Text(
+                  "Shopping Cart",
+                  style: TextStyle(
+                    color: MyColors.primaryColor,
+                    fontWeight: FontWeight.w900,
+                    fontSize: 24,
                   ),
-                )),
+                ),
+                const SizedBox(height: 18), // small gap below title
+                Expanded(
+                  child: RefreshIndicator(
+                    onRefresh: () async {
+                      controller.fetchCartItems();
+                    },
+                    child: ListView.builder(
+                      padding: const EdgeInsets.symmetric(vertical: 8),
+                      itemCount: controller.cartItems.length,
+                      itemBuilder: _buildItem,
+                    ),
+                  ),
+                ),
                 Padding(
                   padding: const EdgeInsets.all(16.0),
                   child: Container(
                     decoration: BoxDecoration(
                       color: Colors.white.withOpacity(0.8),
                       borderRadius: BorderRadius.circular(10),
+                      boxShadow: [BoxShadow(color: MyColors.primaryColor)],
                     ),
                     padding: const EdgeInsets.all(16),
                     child: Column(
@@ -541,19 +570,18 @@ class ShoppingScreen extends StatelessWidget {
                       children: [
                         Obx(() => Text(
                               "Total: \$${controller.totalAmount.toStringAsFixed(2)}",
-                              style: const TextStyle(
+                              style: TextStyle(
                                 fontSize: 20,
                                 fontWeight: FontWeight.bold,
-                                color: Colors.green,
+                                color: MyColors.primaryColor,
                               ),
                               textAlign: TextAlign.center,
                             )),
                         const SizedBox(height: 16),
                         ElevatedButton(
-                          onPressed: () => controller.confirmOrder(
-                              context), // Call confirmOrder with context
+                          onPressed: () => controller.confirmOrder(context),
                           style: ElevatedButton.styleFrom(
-                            backgroundColor: Colors.green,
+                            backgroundColor: MyColors.primaryColor,
                             padding: const EdgeInsets.symmetric(vertical: 16),
                             shape: RoundedRectangleBorder(
                               borderRadius: BorderRadius.circular(10),

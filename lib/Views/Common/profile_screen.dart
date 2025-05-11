@@ -263,27 +263,30 @@ class _ProfileScreenState extends State<ProfileScreen> {
                         fontWeight: FontWeight.bold,
                         color: MyColors.profileColor),
                   ),
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      Icon(Icons.phone, color: MyColors.profileColor),
-                      Text(
-                        phoneNumber,
-                        style: GoogleFonts.inter(
-                            fontSize: 20,
-                            fontWeight: FontWeight.bold,
-                            color: MyColors.profileColor),
-                      ),
-                      SizedBox(width: 10),
-                      Icon(Icons.location_on, color: MyColors.profileColor),
-                      Text(
-                        address,
-                        style: GoogleFonts.inter(
-                            fontSize: 20,
-                            fontWeight: FontWeight.bold,
-                            color: MyColors.profileColor),
-                      ),
-                    ],
+                  SingleChildScrollView(
+                    scrollDirection: Axis.horizontal,
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        Icon(Icons.phone, color: MyColors.profileColor),
+                        Text(
+                          phoneNumber,
+                          style: GoogleFonts.inter(
+                              fontSize: 15,
+                              fontWeight: FontWeight.bold,
+                              color: MyColors.profileColor),
+                        ),
+                        SizedBox(width: 10),
+                        Icon(Icons.location_on, color: MyColors.profileColor),
+                        Text(
+                          address,
+                          style: GoogleFonts.inter(
+                              fontSize: 15,
+                              fontWeight: FontWeight.bold,
+                              color: MyColors.profileColor),
+                        ),
+                      ],
+                    ),
                   ),
                   // Text(
                   //   roleName,
